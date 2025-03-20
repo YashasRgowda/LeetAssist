@@ -1,8 +1,16 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { isAuthenticated, currentUser, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   return (
     <nav className="bg-gray-900 text-white border-b border-gray-800">
@@ -29,10 +37,26 @@ const Navbar = () => {
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
             <Link to="/" className="text-gray-300 hover:text-white transition duration-300 text-sm font-medium">Home</Link>
-            <Link to="/solve" className="text-gray-300 hover:text-white transition duration-300 text-sm font-medium">Problems</Link>
-            <Link to="/dashboard" className="text-gray-300 hover:text-white transition duration-300 text-sm font-medium">Dashboard</Link>
-            <Link to="/login" className="bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-md text-sm font-medium transition duration-300">Login</Link>
-            <Link to="/register" className="text-indigo-400 border border-indigo-400 px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-500 hover:text-white transition duration-300">Register</Link>
+            
+            {isAuthenticated ? (
+              <>
+                <Link to="/solve" className="text-gray-300 hover:text-white transition duration-300 text-sm font-medium">Problems</Link>
+                <button 
+                  onClick={handleLogout}
+                  className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-md text-sm font-medium transition duration-300"
+                >
+                  Logout
+                </button>
+                <span className="text-indigo-400 px-4 py-2 text-sm font-medium">
+                  Hi, {currentUser?.name}
+                </span>
+              </>
+            ) : (
+              <>
+                <Link to="/login" className="bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-md text-sm font-medium transition duration-300">Login</Link>
+                <Link to="/register" className="text-indigo-400 border border-indigo-400 px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-500 hover:text-white transition duration-300">Register</Link>
+              </>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -67,11 +91,54 @@ const Navbar = () => {
       {/* Mobile Menu */}
       <div className={`${isOpen ? 'block' : 'hidden'} md:hidden bg-gray-800 border-t border-gray-700`}>
         <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-          <Link to="/" className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Home</Link>
-          <Link to="/solve" className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Problems</Link>
-          <Link to="/dashboard" className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Dashboard</Link>
-          <Link to="/login" className="block px-3 py-2 rounded-md text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700">Login</Link>
-          <Link to="/register" className="block px-3 py-2 rounded-md text-base font-medium text-indigo-400 border border-indigo-400 hover:bg-indigo-500 hover:text-white mt-2">Register</Link>
+          <Link 
+            to="/" 
+            className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700"
+            onClick={() => setIsOpen(false)}
+          >
+            Home
+          </Link>
+          
+          {isAuthenticated ? (
+            <>
+              <Link 
+                to="/solve" 
+                className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700"
+                onClick={() => setIsOpen(false)}
+              >
+                Problems
+              </Link>
+              <button
+                onClick={() => {
+                  handleLogout();
+                  setIsOpen(false);
+                }}
+                className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-white bg-red-600 hover:bg-red-700 mt-2"
+              >
+                Logout
+              </button>
+              <div className="block px-3 py-2 text-base font-medium text-indigo-400 mt-2">
+                Hi, {currentUser?.name}
+              </div>
+            </>
+          ) : (
+            <>
+              <Link 
+                to="/login" 
+                className="block px-3 py-2 rounded-md text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+                onClick={() => setIsOpen(false)}
+              >
+                Login
+              </Link>
+              <Link 
+                to="/register" 
+                className="block px-3 py-2 rounded-md text-base font-medium text-indigo-400 border border-indigo-400 hover:bg-indigo-500 hover:text-white mt-2"
+                onClick={() => setIsOpen(false)}
+              >
+                Register
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </nav>

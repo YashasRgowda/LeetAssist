@@ -35,7 +35,7 @@ const Home = () => {
                 START SOLVING
               </Link>
               <Link
-                to="/dashboard"
+                to=""
                 className="inline-block border border-gray-600 text-gray-300 py-3 px-8 md:py-4 md:px-12 text-lg md:text-xl font-bold rounded hover:bg-gray-800 transition-colors text-center"
               >
                 EXPLORE
