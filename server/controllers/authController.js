@@ -13,6 +13,7 @@ exports.register = async (req, res) => {
   try {
     // Check if user exists
     let user = await User.findOne({ email });
+    console.log("hello world")
     if (user) {
       return res.status(400).json({ msg: 'User already exists' });
     }
@@ -38,6 +39,9 @@ exports.register = async (req, res) => {
       }
     };
 
+    console.log("hello world")
+
+
     // Sign token
     jwt.sign(
       payload,
@@ -48,6 +52,9 @@ exports.register = async (req, res) => {
         res.json({ token });
       }
     );
+
+    console.log("hello world")
+
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server error');
